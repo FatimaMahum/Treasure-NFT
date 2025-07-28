@@ -1,0 +1,233 @@
+.withdrawalsSection {
+  padding: 100px 0 60px 0; /* Top for navbar, bottom for footer */
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Add margin between navbar and body */
+.withdrawalsSection {
+  margin-top: 16px;
+}
+
+.accessDenied {
+  color: #ffd700;
+  background: #111;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 120px auto 40px auto;
+  max-width: 500px;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.card {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.85) 0%, rgba(45, 45, 45, 0.85) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 18px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  animation: titleGlow 2s ease-in-out infinite alternate;
+  text-align: center;
+}
+
+.cardGlow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .card:hover .cardGlow {
+    opacity: 1;
+  }
+  
+  .tableContainer {
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    background: rgba(26, 26, 26, 0.8);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+  
+  .table {
+    width: 100%;
+    color: #fff;
+    font-size: 0.95rem;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 600px;
+  }
+  
+  .table th {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #ffd700;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .table td {
+    padding: 12px;
+    background-color: rgba(30, 30, 30, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .table tr:hover {
+    background: rgba(255, 215, 0, 0.08);
+  }
+  
+  .statusPending {
+    color: #ffd700;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  
+  .statusApproved {
+    color: #4ade80;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+  }
+  
+  .statusRejected {
+    color: #f87171;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(248, 113, 113, 0.5);
+  }
+  
+  .actionBtn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  .actionApprove {
+    background: #ffd700;
+    color: #111;
+  }
+  
+  .actionApprove:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .actionReject {
+    background: #ff4d4f;
+    color: #fff;
+  }
+  
+  .actionReject:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+.refreshBtn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+
+.refreshBtn:hover {
+  transform: rotate(180deg);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);}
+  100% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);}
+}
+  
+  @media (max-width: 900px) {
+    .card {
+      max-width: 98vw;
+      padding: 1.2rem;
+    }
+    .table {
+      font-size: 0.9rem;
+      min-width: 480px;
+    }
+  }
+
+@media (max-width: 600px) {
+  .withdrawalsSection {
+    padding: 80px 0 50px 0;
+    margin-top: 8px;
+  }
+  .card {
+    padding: 0.7rem;
+    margin: 1rem 0.9rem;
+    border-radius: 12px;
+  }
+  .sectionTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .tableContainer {
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+  .table {
+    font-size: 0.8rem;
+    min-width: 340px;
+  }
+  .table th, .table td {
+    padding: 7px 4px;
+  }
+  .accessDenied {
+    margin: 90px 4px 20px 4px;
+    padding: 12px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+}

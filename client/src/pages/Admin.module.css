@@ -1,0 +1,523 @@
+.adminSection {
+  padding: 4rem 0;
+  margin-bottom: 4rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  min-height: 80vh;
+  padding-top: 120px; /* Increased top padding to avoid navbar */
+}
+
+.adminSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(192, 192, 192, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sectionContentWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.sectionTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  animation: titleGlow 2s ease-in-out infinite alternate;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.sectionSubtitle {
+  font-size: 1.2rem;
+  color: #c0c0c0;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  line-height: 1.6;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  padding: 0 1rem;
+  margin-top: 2rem; /* Add top margin for extra spacing */
+}
+
+.headerContent > div {
+  text-align: left;
+}
+
+.refreshBtn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+
+.refreshBtn:hover {
+  transform: rotate(180deg);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.statCard {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(45, 45, 45, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+}
+
+.statCard::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.statCard:hover::before {
+  opacity: 1;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffd700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+.statDescription {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.tableContainer {
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(26, 26, 26, 0.8);
+  margin-bottom: 2rem;
+}
+
+.adminTable {
+  width: 100%;
+  color: #fff;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.adminTable th {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #ffd700;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.adminTable td {
+  padding: 12px;
+  background-color: rgba(30, 30, 30, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.adminTable tr:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.active {
+  color: #4ade80;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+}
+
+.completed {
+  color: #60a5fa;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+}
+
+.inactive {
+  color: #f87171;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(248, 113, 113, 0.5);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  color: #fff;
+}
+
+.loadingContainer p {
+  margin-top: 1rem;
+  color: #c0c0c0;
+}
+
+.adminGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.adminCard {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(45, 45, 45, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.adminCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.adminCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 70px rgba(255, 215, 0, 0.3);
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.adminCard:hover::before {
+  opacity: 1;
+}
+
+.adminCard:hover .cardGlow {
+  opacity: 1;
+}
+
+.cardGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@media (max-width: 768px) {
+  .adminSection {
+    padding: 2rem 0;
+    margin-bottom: 3rem;
+    padding-top: 100px; /* Adjusted for tablets */
+  }
+  .sectionContentWrapper {
+    padding: 0 1rem;
+  }
+  .sectionTitle {
+    font-size: 2.2rem;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+  .sectionSubtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .headerContent {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem; /* Reduced margin for tablets */
+  }
+  .adminGrid {
+    gap: 1.5rem;
+  }
+  .adminCard {
+    padding: 1.5rem;
+  }
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .statCard {
+    padding: 1rem;
+  }
+  .adminTable {
+    font-size: 0.8rem;
+  }
+  .adminTable th,
+  .adminTable td {
+    padding: 8px 6px;
+  }
+  .tableContainer {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .adminSection {
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    padding-top: 90px; /* Adjusted for smartphones */
+  }
+  .sectionContentWrapper {
+    padding: 0 0.5rem;
+  }
+  .sectionTitle {
+    font-size: 1.8rem;
+    line-height: 1.1;
+    margin-bottom: 0.6rem;
+  }
+  .sectionSubtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+  .headerContent {
+    gap: 1rem;
+    margin-top: 1rem; /* Reduced margin for smartphones */
+  }
+  .adminGrid {
+    gap: 1rem;
+  }
+  .adminCard {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+  .statCard {
+    padding: 0.8rem;
+    border-radius: 10px;
+  }
+  .statValue {
+    font-size: 1.5rem;
+  }
+  .statDescription {
+    font-size: 0.8rem;
+  }
+  .cardTitle {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .adminTable {
+    font-size: 0.7rem;
+  }
+  .adminTable th,
+  .adminTable td {
+    padding: 6px 4px;
+  }
+  .tableContainer {
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .adminSection {
+    padding: 1rem 0;
+    padding-top: 80px; /* Adjusted for small smartphones */
+  }
+  .sectionContentWrapper {
+    padding: 0 0.3rem;
+  }
+  .sectionTitle {
+    font-size: 1.5rem;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .sectionSubtitle {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .headerContent {
+    margin-top: 0.8rem; /* Reduced margin for small smartphones */
+  }
+  .adminCard {
+    padding: 0.8rem;
+    border-radius: 10px;
+  }
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+  .statCard {
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+  .statValue {
+    font-size: 1.3rem;
+  }
+  .statDescription {
+    font-size: 0.7rem;
+  }
+  .cardTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+  .adminTable {
+    font-size: 0.65rem;
+  }
+  .adminTable th,
+  .adminTable td {
+    padding: 4px 2px;
+  }
+  .tableContainer {
+    border-radius: 6px;
+    margin-bottom: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .adminSection {
+    padding: 0.8rem 0;
+    padding-top: 70px; /* Adjusted for very small screens */
+  }
+  .sectionContentWrapper {
+    padding: 0 0.2rem;
+  }
+  .sectionTitle {
+    font-size: 1.3rem;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  .sectionSubtitle {
+    font-size: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+  .headerContent {
+    margin-top: 0.6rem; /* Minimal margin for very small screens */
+  }
+  .adminCard {
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .statCard {
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+  .statValue {
+    font-size: 1.1rem;
+  }
+  .statDescription {
+    font-size: 0.65rem;
+  }
+  .cardTitle {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .adminTable {
+    font-size: 0.6rem;
+  }
+  .adminTable th,
+  .adminTable td {
+    padding: 3px 1px;
+  }
+  .tableContainer {
+    border-radius: 4px;
+    margin-bottom: 0.6rem;
+  }
+}

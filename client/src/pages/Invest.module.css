@@ -1,0 +1,548 @@
+.investContainer {
+  padding: 4rem 0; /* Full width, with vertical padding */
+  min-height: 80vh;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  position: relative;
+  z-index: 2;
+  padding-top: 100px; /* Adjust for fixed navbar */
+  text-align: center; /* Keeps text centered */
+}
+
+.investContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(192, 192, 192, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 1200px; /* Align with the new plansGrid max-width */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem; /* Inner padding for text content */
+}
+
+.sectionTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.2rem;
+  color: #c0c0c0;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  justify-content: center;
+  max-width: 1200px; /* Re-introduced max-width for centering */
+  margin: 0 auto; /* Centers the grid horizontally */
+  padding: 0 2rem; /* Added horizontal padding for spacing */
+}
+
+.planCard {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(45, 45, 45, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.planCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.planCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 60px rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.planCard:hover::before {
+  opacity: 1;
+}
+
+.planCard:hover .cardGlow {
+  opacity: 1;
+}
+
+.cardGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.planHeader {
+  padding: 1.5rem;
+  color: #000; /* Default to black for gradients */
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+}
+
+.bronzeGradient {
+  background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 50%, #cd7f32 100%);
+  color: #fff; /* White text for bronze */
+}
+
+.silverGradient {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 50%, #c0c0c0 100%);
+  color: #000; /* Black text for silver */
+}
+
+.goldGradient {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  color: #000; /* Black text for gold */
+}
+
+.planName {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.planPrice {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.planFeatures {
+  list-style: none;
+  padding: 1.5rem 2rem;
+  text-align: left;
+  color: #c0c0c0;
+  flex-grow: 1; /* Make features section take available space */
+}
+
+.planFeatures li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.planFeatures li:last-child {
+  border-bottom: none;
+}
+
+.planActions {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.investBtn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px; /* Adjusted from 50px to 8px */
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.investBtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.investBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.investBtn:hover::before {
+  left: 100%;
+}
+
+.bronzeBtn {
+  background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 50%, #cd7f32 100%);
+  color: #fff;
+}
+
+.silverBtn {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 50%, #c0c0c0 100%);
+  color: #000;
+}
+
+.goldBtn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  color: #000;
+}
+
+/* Investment Modal */
+.investmentModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInModal 0.3s ease-out;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  padding: 2.5rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  animation: slideInModal 0.3s ease-out;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.modalTitle {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.closeModal {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.closeModal:hover {
+  color: #ffd700;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ffd700;
+  font-weight: 500;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(26, 26, 26, 0.8);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.formGroup select,
+.paymentMethodSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(26, 26, 26, 0.8);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem; /* Make room for custom arrow */
+}
+
+.formGroup select:focus,
+.paymentMethodSelect:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.formGroup select:hover,
+.paymentMethodSelect:hover {
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+/* Style the select options */
+.formGroup select option,
+.paymentMethodSelect option {
+  background: rgba(26, 26, 26, 0.95);
+  color: #ffffff;
+  padding: 0.5rem;
+  border: none;
+}
+
+.formGroup select option:hover,
+.paymentMethodSelect option:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.formGroup select option:checked,
+.paymentMethodSelect option:checked {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+}
+
+.confirmBtn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.confirmBtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.confirmBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.confirmBtn:hover::before {
+  left: 100%;
+}
+
+.walletInfo {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  margin-top: 1rem;
+  display: inline-block;
+  font-weight: 600;
+  color: #ffd700;
+  font-size: 1.1rem;
+}
+
+.balanceError {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(255, 0, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ff6b6b;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.errorIcon {
+  font-size: 1.1rem;
+}
+
+.confirmBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #666 0%, #888 100%);
+  border-color: #666;
+}
+
+.confirmBtn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .investContainer {
+    padding: 4rem 0;
+    padding-top: 90px;
+  }
+
+  .sectionHeader {
+    margin-bottom: 3rem;
+    padding: 0 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 2.5rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+
+  .plansGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem; /* Keep padding for mobile to prevent cards from touching edges */
+  }
+
+  .planCard {
+    padding-bottom: 1.5rem;
+  }
+
+  .planHeader {
+    padding: 1rem;
+  }
+
+  .planName {
+    font-size: 1.5rem;
+  }
+
+  .planPrice {
+    font-size: 1rem;
+  }
+
+  .planFeatures {
+    padding: 1rem 1.5rem;
+  }
+
+  .planFeatures li {
+    font-size: 0.9rem;
+  }
+
+  .investBtn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .modalContent {
+    padding: 2rem 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+  }
+
+  .closeModal {
+    font-size: 1.8rem;
+  }
+
+  .formGroup label {
+    font-size: 0.9rem;
+  }
+
+  .formGroup input {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .confirmBtn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* For mobile responsiveness */
+@media (max-width: 768px) {
+  .formGroup select,
+  .paymentMethodSelect {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+    padding-right: 2.2rem;
+    background-size: 0.9rem;
+  }
+}

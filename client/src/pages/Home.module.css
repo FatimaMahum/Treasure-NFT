@@ -1,0 +1,50 @@
+.homeWrapper {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.homeWrapper::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(192, 192, 192, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(205, 127, 50, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  /* z-index removed to prevent overlaying the navbar dropdown */
+}
+
+.homeWrapper > * {
+  position: relative;
+  /* z-index removed to prevent interfering with navbar dropdown */
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0c0c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #ffd700, #c0c0c0);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #ffed4e, #e8e8e8);
+}
