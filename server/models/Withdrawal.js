@@ -32,6 +32,13 @@ const withdrawalSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  autoProcessAt: {
+    type: Date,
+    default: function() {
+      // Set auto-process time to 24 hours from creation
+      return new Date(Date.now() + 24 * 60 * 60 * 1000);
+    }
   }
 });
 

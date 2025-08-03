@@ -51,46 +51,64 @@ const Admin = () => {
     fetchData();
   }, [user, token, navigate]);
 
-
-
-
   const fetchData = async () => {
     try {
-      console.log("🔄 Fetching admin data...");
       setLoading(true);
+      console.log("🔍 Fetching admin data...");
 
       const [usersRes, investmentsRes, plansRes] = await Promise.all([
         api.get("/users", { headers: { Authorization: `Bearer ${token}` } }),
-        api.get("/investments", { headers: { Authorization: `Bearer ${token}` } }),
+        api.get("/investments/all", { headers: { Authorization: `Bearer ${token}` } }),
         api.get("/plans")
       ]);
 
-      console.log("📊 Users response:", usersRes);
-      console.log("📊 Investments response:", investmentsRes);
-      console.log("📊 Plans response:", plansRes);
+      console.log("📊 Users response:", usersRes.data);
+      console.log("📊 Investments response:", investmentsRes.data);
+      console.log("📊 Plans response:", plansRes.data);
 
       const usersData = usersRes.data?.users || usersRes.data || [];
       const investmentsData = investmentsRes.data?.investments || investmentsRes.data || [];
       const plansData = plansRes.data?.plans || plansRes.data || [];
+
+      console.log("👥 Users data:", usersData.length, "users");
+      console.log("💰 Investments data:", investmentsData.length, "investments");
+      console.log("📋 Plans data:", plansData.length, "plans");
 
       setUsers(usersData);
       setInvestments(investmentsData);
       setPlans(plansData);
 
       // Calculate stats
-      setStats({
+      const newStats = {
         totalUsers: usersData.length,
         totalInvestments: investmentsData.length,
         totalInvestmentAmount: investmentsData.reduce((sum, inv) => sum + (inv.investedAmount || 0), 0),
         activeInvestments: investmentsData.filter(inv => inv.status === 'active').length,
         totalPlans: plansData.length
-      });
+      };
+
+      console.log("📊 Admin stats calculated:", newStats);
+      setStats(newStats);
+
+      console.log("✅ Admin data fetched successfully");
 
     } catch (error) {
       console.error("❌ Failed to fetch admin data:", error);
       console.error("❌ Error details:", error.response?.data);
       console.error("❌ Error status:", error.response?.status);
       console.error("❌ Error message:", error.message);
+      
+      // Set empty arrays to prevent undefined errors
+      setUsers([]);
+      setInvestments([]);
+      setPlans([]);
+      setStats({
+        totalUsers: 0,
+        totalInvestments: 0,
+        totalInvestmentAmount: 0,
+        activeInvestments: 0,
+        totalPlans: 0
+      });
     } finally {
       setLoading(false);
     }
@@ -111,6 +129,7 @@ const Admin = () => {
   const refreshData = async () => {
     setRefreshing(true);
     await fetchData();
+    setLastUpdateTime(new Date());
     setRefreshing(false);
   };
 
@@ -195,6 +214,46 @@ const Admin = () => {
     setShowPlanForm(true);
   };
 
+  // Check if user is admin
+  if (!user || user.role !== "admin") {
+    return (
+      <>
+        <Navbar />
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+          color: "#ffd700",
+          fontSize: "1.2rem"
+        }}>
+          <div>
+            <h2>Access Denied</h2>
+            <p>You need admin privileges to access this page.</p>
+            <p style={{ fontSize: "0.9rem", color: "#999", marginTop: "0.5rem" }}>
+              Current user: {user?.name || "Not logged in"} | Role: {user?.role || "None"}
+            </p>
+            <button 
+              onClick={() => navigate("/login")}
+              style={{
+                background: "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+                border: "none",
+                borderRadius: "8px",
+                padding: "10px 20px",
+                color: "#000",
+                cursor: "pointer",
+                marginTop: "1rem"
+              }}
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   if (loading) {
     return (
       <>
@@ -218,18 +277,36 @@ const Admin = () => {
               <h2 className={styles.sectionTitle}>Admin Dashboard</h2>
               <p className={styles.sectionSubtitle}>Manage users, investments, and plans</p>
               <small style={{ color: '#999', fontSize: '0.8rem' }}>
-                🔄 Auto-refreshes every 30 seconds • Last updated: {lastUpdateTime.toLocaleTimeString()}
+                Last updated: {lastUpdateTime.toLocaleTimeString()}
               </small>
             </div>
-            <button 
-              onClick={refreshData} 
-              className={styles.refreshBtn} 
-              disabled={refreshing}
-              title="Refresh Admin Data"
-            >
-              {refreshing ? "🔄" : "🔄"}
-            </button>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button 
+                onClick={refreshData} 
+                className={styles.refreshBtn} 
+                disabled={refreshing}
+                title="Refresh Admin Data"
+              >
+                {refreshing ? "🔄" : "🔄"}
+              </button>
+             
+               
+            </div>
           </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "2rem",
+              color: "#ffd700"
+            }}>
+              <div className="loading-spinner"></div>
+              <span style={{ marginLeft: "1rem" }}>Loading admin data...</span>
+            </div>
+          )}
 
           {/* Stats Cards */}
           <div className={styles.statsGrid}>
@@ -259,6 +336,8 @@ const Admin = () => {
               <p className={styles.statDescription}>Available plans</p>
             </div>
           </div>
+
+         
 
           <div className={styles.adminGrid}>
             {/* Users Card */}
@@ -291,6 +370,7 @@ const Admin = () => {
                 ) : (
                   <div style={{ padding: "2rem", textAlign: "center", color: "#999" }}>
                     <p>No users found. Register some users to see them here.</p>
+                    <small>Make sure you're logged in as an admin user.</small>
                   </div>
                 )}
               </div>
@@ -331,6 +411,7 @@ const Admin = () => {
                 ) : (
                   <div style={{ padding: "2rem", textAlign: "center", color: "#999" }}>
                     <p>No investments found. Users need to make investments to see them here.</p>
+                    <small>Investments will appear here once users start investing.</small>
                   </div>
                 )}
               </div>

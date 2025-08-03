@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import styles from "./Dashboard.module.css";
 import { getMyInvestments } from "../services/investmentService";
-import { QRCodeCanvas } from "qrcode.react";
+
 import { requestWithdrawal, getMyWithdrawals } from "../services/withdrawalService";
 
 const Dashboard = () => {
@@ -23,18 +23,26 @@ const Dashboard = () => {
   const [dashboardLoading, setDashboardLoading] = useState(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [userWithdrawAddress, setUserWithdrawAddress] = useState("");
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [withdrawals, setWithdrawals] = useState([]);
   const [withdrawError, setWithdrawError] = useState("");
 
   // Create axios instance with base URL
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api'
+    baseURL: process.env.REACT_APP_BACKEND_URL
   });
 
   const withdrawAddress = "TNVFSb5Jv1HNavWitufyEzdwoU5ZrSChpK";
   const withdrawNetwork = "TRC20";
   const scanUrl = `https://tronscan.org/#/address/${withdrawAddress}`;
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user && !token) {
+      window.location.href = "/login";
+    }
+  }, [authLoading, user, token]);
 
   const fetchDashboardData = async () => {
     if (!user || !token) {
@@ -51,42 +59,78 @@ const Dashboard = () => {
 
       // Fetch investments
       const investmentsResponse = await getMyInvestments(token);
-      const investments = investmentsResponse.data || [];
+      
+      // Handle different response structures
+      let investments = [];
+      
+      // Check if response has data and it's an object with investments array
+      if (investmentsResponse.data && 
+          typeof investmentsResponse.data === 'object' && 
+          investmentsResponse.data.investments && 
+          Array.isArray(investmentsResponse.data.investments)) {
+        investments = investmentsResponse.data.investments;
+      } 
+      // Check if response data is directly an array
+      else if (investmentsResponse.data && Array.isArray(investmentsResponse.data)) {
+        investments = investmentsResponse.data;
+      }
+      // Check if response.data.data exists (nested structure)
+      else if (investmentsResponse.data && 
+               investmentsResponse.data.data && 
+               Array.isArray(investmentsResponse.data.data)) {
+        investments = investmentsResponse.data.data;
+      }
       
       // Calculate earnings from active investments
       let dailyEarnings = 0;
       let totalEarnings = 0;
       
-      investments.forEach(inv => {
-        if (inv.status === 'active') {
-          dailyEarnings += inv.dailyReturn || 0;
-        }
-        totalEarnings += inv.totalReturned || 0;
-      });
+      if (Array.isArray(investments)) {
+        investments.forEach(inv => {
+          if (inv.status === 'active') {
+            dailyEarnings += inv.dailyReturn || 0;
+          }
+          totalEarnings += inv.totalReturned || 0;
+        });
+      }
 
       // Fetch team size (referrals)
       let teamSize = 0;
       try {
-        const referralsResponse = await api.get("/referrals/stats", {
+        const teamResponse = await api.get("/referrals/stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        teamSize = referralsResponse.data.totalReferrals || 0;
+        teamSize = teamResponse.data?.teamSize || teamResponse.data?.totalReferrals || 0;
       } catch (error) {
-        console.log("Referrals API not available, using default");
-        teamSize = 0;
+        console.log("⚠️ Team size fetch failed:", error.message);
+        // Team size fetch failed, continue with 0
       }
 
-      setStats({
+      const newStats = {
         walletBalance,
         dailyEarnings,
         totalEarnings,
         teamSize,
-      });
-    } catch (err) {
-      console.error("Dashboard data fetch error:", err);
+      };
+
+      console.log("📊 Dashboard stats calculated:", newStats);
+      setStats(newStats);
+    } catch (error) {
+      console.error("❌ Failed to load dashboard data:", error);
+      console.error("❌ Error details:", error.response?.data);
+      console.error("❌ Error status:", error.response?.status);
       toast.error("Failed to load dashboard data");
+      
+      // Set default stats to prevent crashes
+      setStats({
+        walletBalance: 0,
+        dailyEarnings: 0,
+        totalEarnings: 0,
+        teamSize: 0,
+      });
+    } finally {
+      setDashboardLoading(false);
     }
-    setDashboardLoading(false);
   };
 
   const fetchWithdrawals = async () => {
@@ -107,6 +151,20 @@ const Dashboard = () => {
     }
   }, [authLoading, user, token]);
 
+  // Refresh dashboard when user returns to the page (e.g., from investment)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user && token) {
+        console.log("🔄 Dashboard focused, refreshing data...");
+        fetchDashboardData();
+        fetchWithdrawals();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [user, token]);
+
  
 
 
@@ -125,19 +183,36 @@ const Dashboard = () => {
     setWithdrawError("");
     try {
       const amount = parseFloat(withdrawAmount);
-      if (isNaN(amount) || amount <= 0) {
-        setWithdrawError("Enter a valid amount.");
+      
+      // Validate amount
+      if (isNaN(amount) || amount < 10) {
+        setWithdrawError("Minimum withdrawal amount is $10.");
         setWithdrawLoading(false);
         return;
       }
+      
       if (amount > stats.walletBalance) {
         setWithdrawError("Insufficient wallet balance.");
         setWithdrawLoading(false);
         return;
       }
-      await requestWithdrawal({ amount, address: withdrawAddress, network: withdrawNetwork }, token);
-      toast.success("Withdrawal request submitted!");
+      
+      // Validate address
+      if (!userWithdrawAddress.trim()) {
+        setWithdrawError("Please enter your USDT TRC20 address.");
+        setWithdrawLoading(false);
+        return;
+      }
+      
+      await requestWithdrawal({ 
+        amount, 
+        address: userWithdrawAddress.trim(), 
+        network: withdrawNetwork 
+      }, token);
+      
+      toast.success("Withdrawal request submitted! Amount will be withdrawn within 24 hours.");
       setWithdrawAmount("");
+      setUserWithdrawAddress("");
       setShowWithdrawModal(false);
       fetchDashboardData();
       fetchWithdrawals();
@@ -156,21 +231,25 @@ const Dashboard = () => {
   const refreshDashboard = async () => {
     setDashboardLoading(true);
     await fetchDashboardData();
+    await fetchWithdrawals();
     toast.success("Dashboard refreshed!");
   };
 
   if (authLoading || dashboardLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "50vh",
-        }}
-      >
-        <div className="loading-spinner"></div>
-      </div>
+      <>
+       
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <div className="loading-spinner"></div>
+        </div>
+      </>
     );
   }
 
@@ -216,6 +295,18 @@ const Dashboard = () => {
               <div className={styles.cardGlow}></div>
             </div>
           </div>
+
+          {/* Admin Dashboard Link for Admin Users */}
+          {user?.role === 'admin' && (
+            <div className={`${styles.actionCard} slide-up`} style={{ animationDelay: "0.4s" }}>
+              <h3 className={styles.cardTitle}>Admin Panel</h3>
+              <p className={styles.cardDescription}>Manage users, investments, and system settings</p>
+              <Link to="/admin" className={styles.btnPrimary}>
+                Admin Dashboard
+              </Link>
+              <div className={styles.cardGlow}></div>
+            </div>
+          )}
 
           {/* Action Cards */}
           <div className={styles.actionCards}>
@@ -323,16 +414,30 @@ const Dashboard = () => {
             <form onSubmit={handleWithdrawSubmit}>
               <div style={{marginBottom: 12}}>
                 <label style={{display: "block", marginBottom: 4}}>Amount ($)</label>
-                <input type="number" min="1" step="1" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)} style={{padding: 8, borderRadius: 6, border: "1px solid #ffd700", width: "100%"}} required />
+                <input 
+                  type="number" 
+                  min="10" 
+                  step="0.01" 
+                  value={withdrawAmount} 
+                  onChange={e => setWithdrawAmount(e.target.value)} 
+                  style={{padding: 8, borderRadius: 6, border: "1px solid #ffd700", width: "100%"}} 
+                  placeholder="Minimum $10"
+                  required 
+                />
+              </div>
+              <div style={{marginBottom: 12}}>
+                <label style={{display: "block", marginBottom: 4}}>USDT TRC20 Address</label>
+                <input 
+                  type="text" 
+                  value={userWithdrawAddress} 
+                  onChange={e => setUserWithdrawAddress(e.target.value)} 
+                  style={{padding: 8, borderRadius: 6, border: "1px solid #ffd700", width: "100%"}} 
+                  placeholder="Enter your USDT TRC20 address"
+                  required 
+                />
               </div>
               <div style={{marginBottom: 8}}>
-                <span style={{fontWeight: "bold", color: "#ffd700"}}>{withdrawAddress}</span>
-              </div>
-              <div style={{marginBottom: 8}}>
-                Network: <span style={{color: "#ffd700"}}>{withdrawNetwork}</span>
-              </div>
-              <div style={{marginBottom: 16}}>
-                <QRCodeCanvas value={withdrawAddress} size={120} />
+                <small style={{color: "#888"}}>Network: <span style={{color: "#ffd700"}}>{withdrawNetwork}</span></small>
               </div>
               {withdrawError && <div style={{color: "#ff4d4f", marginBottom: 8}}>{withdrawError}</div>}
               <button type="submit" disabled={withdrawLoading} style={{marginRight: 12, padding: "8px 16px", borderRadius: 6, border: "none", background: "#ffd700", color: "#111", fontWeight: 700, cursor: "pointer"}}>

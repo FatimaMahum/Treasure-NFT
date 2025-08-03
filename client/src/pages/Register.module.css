@@ -253,6 +253,8 @@
   .registerForm {
     padding: 2rem 1.5rem;
     border-radius: 15px;
+    margin-left: 30px;
+    margin-right: 30px;
   }
 
   .registerForm h2 {

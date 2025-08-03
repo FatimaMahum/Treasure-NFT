@@ -18,7 +18,7 @@ const Referrals = () => {
 
   // Create axios instance with base URL
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api'
+    baseURL: process.env.REACT_APP_BACKEND_URL
   });
 
   useEffect(() => {
@@ -27,22 +27,44 @@ const Referrals = () => {
     }
   }, [user, token]);
 
+  // Refresh referral data when user returns to the page
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user && token) {
+        console.log("🔄 Referral page focused, refreshing data...");
+        fetchReferralData();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [user, token]);
+
   
 
 
   const fetchReferralData = async () => {
     try {
       setLoading(true);
+      console.log("🔍 Fetching referral data...");
+      
       const response = await api.get("/referrals/dashboard", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log("📊 Referral response:", response.data);
+
       if (response.data.success) {
         setReferralData(response.data.data);
         console.log("✅ Referral data updated:", response.data.data);
+      } else {
+        console.error("❌ Referral data fetch failed:", response.data.message);
+        toast.error("Failed to load referral data");
       }
     } catch (error) {
       console.error("❌ Failed to fetch referral data:", error);
+      console.error("❌ Error details:", error.response?.data);
+      console.error("❌ Error status:", error.response?.status);
       toast.error("Failed to load referral data");
     } finally {
       setLoading(false);
@@ -58,42 +80,132 @@ const Referrals = () => {
 
   const copyReferralLink = async () => {
     try {
+      console.log("🔗 Getting referral link...");
       const response = await api.get("/referrals/link", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log("📊 Referral link response:", response.data);
+
       if (response.data.success) {
         await navigator.clipboard.writeText(response.data.referralLink);
-        toast.success("Referral link copied to clipboard!");
+        console.log("✅ Referral link copied:", response.data.referralLink);
+        toast.success("🎉 Referral link copied to clipboard!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: {
+            background: "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+            color: "#000",
+            fontWeight: "bold",
+            borderRadius: "10px",
+            boxShadow: "0 4px 15px rgba(255, 215, 0, 0.3)"
+          }
+        });
+      } else {
+        console.error("❌ Failed to get referral link:", response.data.message);
+        toast.error("❌ Failed to get referral link");
       }
     } catch (error) {
-      console.error("Failed to get referral link:", error);
-      toast.error("Failed to copy referral link");
+      console.error("❌ Failed to get referral link:", error);
+      console.error("❌ Error details:", error.response?.data);
+      toast.error("❌ Failed to copy referral link", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {
+          background: "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)",
+          color: "#fff",
+          fontWeight: "bold",
+          borderRadius: "10px",
+          boxShadow: "0 4px 15px rgba(255, 77, 79, 0.3)"
+        }
+      });
     }
   };
 
   const applyReferralCode = async (e) => {
     e.preventDefault();
+    
+    // Enhanced validation with better user feedback
     if (!referralCode.trim()) {
-      toast.error("Please enter a referral code");
+      toast.error("⚠️ Please enter a referral code", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {
+          background: "linear-gradient(135deg, #faad14 0%, #ffc53d 100%)",
+          color: "#000",
+          fontWeight: "bold",
+          borderRadius: "10px",
+          boxShadow: "0 4px 15px rgba(250, 173, 20, 0.3)"
+        }
+      });
       return;
     }
 
     try {
+      console.log("🔗 Applying referral code:", referralCode.trim());
       const response = await api.post("/referrals/apply-code", 
         { referralCode: referralCode.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      console.log("📊 Apply referral code response:", response.data);
+
       if (response.data.success) {
-        toast.success("Referral code applied successfully!");
+        console.log("✅ Referral code applied successfully");
+        toast.success("🎉 Referral code applied successfully!", {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: {
+            background: "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+            color: "#fff",
+            fontWeight: "bold",
+            borderRadius: "10px",
+            boxShadow: "0 4px 15px rgba(82, 196, 26, 0.3)"
+          }
+        });
         setReferralCode("");
         setShowApplyForm(false);
         // Refresh data immediately after applying code
         await fetchReferralData();
+      } else {
+        console.error("❌ Failed to apply referral code:", response.data.message);
+        toast.error(`❌ ${response.data.message || "Failed to apply referral code"}`);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to apply referral code");
+      console.error("❌ Apply referral code error:", error);
+      console.error("❌ Error details:", error.response?.data);
+      const errorMessage = error.response?.data?.message || "Failed to apply referral code";
+      toast.error(`❌ ${errorMessage}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {
+          background: "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)",
+          color: "#fff",
+          fontWeight: "bold",
+          borderRadius: "10px",
+          boxShadow: "0 4px 15px rgba(255, 77, 79, 0.3)"
+        }
+      });
     }
   };
 

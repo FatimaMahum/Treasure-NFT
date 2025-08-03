@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import OtpVerification from "../components/OtpVerification";
 import styles from "./Login.module.css";
 
 const Login = () => {
@@ -17,12 +18,14 @@ const Login = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
-  const { login } = useAuth();
+  const [showOtpVerification, setShowOtpVerification] = useState(false);
+  const [pendingUser, setPendingUser] = useState(null);
+  const { login, loginWithToken } = useAuth();
   const navigate = useNavigate();
 
   // Create axios instance
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api'
+    baseURL: process.env.REACT_APP_BACKEND_URL
   });
 
   const handleChange = (e) => {
@@ -41,18 +44,41 @@ const Login = () => {
       return;
     }
 
-    const result = await login(formData.email, formData.password);
-
-    if (result.success) {
-      toast.success(result.message);
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user?.role === "admin") {
-        navigate("/admin");
+    try {
+      const response = await api.post("/auth/login", formData);
+      
+      if (response.data.success) {
+        if (response.data.requiresOtp) {
+          // Show OTP verification
+          setPendingUser(response.data.user);
+          setShowOtpVerification(true);
+          toast.success(response.data.message);
+          
+          // In development, show the OTP code in console
+          if (response.data.message.includes('DEV:')) {
+            const otpCode = response.data.message.match(/DEV: (\d+)/)?.[1];
+            if (otpCode) {
+              console.log('🔐 Development OTP Code:', otpCode);
+              toast.info(`Development OTP: ${otpCode} (check console)`);
+            }
+          }
+        } else {
+          // Direct login
+          loginWithToken(response.data.token, response.data.user);
+          toast.success(response.data.message);
+          const user = JSON.parse(localStorage.getItem("user"));
+          if (user?.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/dashboard");
+          }
+        }
       } else {
-        navigate("/dashboard");
+        toast.error(response.data.message || "Invalid email or password.");
       }
-    } else {
-      toast.error(result.message || "Invalid email or password.");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message || "Login failed. Please try again.");
     }
 
     setLoading(false);
@@ -174,6 +200,23 @@ const Login = () => {
           <div className={styles.cardGlow}></div>
         </div>
       </main>
+      
+      {showOtpVerification && pendingUser && (
+        <OtpVerification 
+          user={pendingUser}
+          onVerificationSuccess={() => {
+            setShowOtpVerification(false);
+            setPendingUser(null);
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user?.role === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/dashboard");
+            }
+          }}
+        />
+      )}
+      
       <Footer />
     </>
   );

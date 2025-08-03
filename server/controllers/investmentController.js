@@ -1,70 +1,102 @@
-import Investment from "../models/Investment.js";
-import Plan from "../models/Plan.js";
-import User from "../models/User.js";
+import Investment from '../models/Investment.js';
+import User from '../models/User.js';
+import Plan from '../models/Plan.js';
 
-// Create investment
+// Create new investment (real-time wallet deduction)
 export const createInvestment = async (req, res) => {
-  const { planId, investedAmount, paymentMethod, transactionId } = req.body;
-  const userId = req.user.id;
-
   try {
-    // Find the plan
-    let plan = null;
-    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(planId);
-    if (isValidObjectId) {
-      plan = await Plan.findById(planId);
-    }
-    
-    if (!plan) {
-      // Use hardcoded plan data as fallback
-      const planData = {
-        bronze: { minAmount: 10, maxAmount: 49, dailyReturnRate: 3 },
-        silver: { minAmount: 50, maxAmount: 99, dailyReturnRate: 5 },
-        gold: { minAmount: 100, maxAmount: 499, dailyReturnRate: 8 },
-        platinum: { minAmount: 500, maxAmount: 999, dailyReturnRate: 12 },
-        diamond: { minAmount: 1000, maxAmount: Number.POSITIVE_INFINITY, dailyReturnRate: 15 }
-      };
-      plan = planData[planId];
-      if (!plan) {
-        return res.status(404).json({ success: false, message: "Plan not found" });
-      }
-    }
+    const userId = req.user.id;
+    const { amount, planId, paymentMethod } = req.body;
 
-    // Validate investment amount
-    if (investedAmount < plan.minAmount || (plan.maxAmount !== Number.POSITIVE_INFINITY && investedAmount > plan.maxAmount)) {
+    // Validate required fields
+    if (!amount || !planId) {
       return res.status(400).json({
         success: false,
-        message: `Investment amount must be between $${plan.minAmount} and $${plan.maxAmount === Number.POSITIVE_INFINITY ? "∞" : plan.maxAmount}`
+        message: "Amount and plan ID are required"
       });
     }
 
-    // Calculate daily return (convert percentage to decimal)
-    const dailyReturnRate = typeof plan.dailyReturnRate === 'number' ? plan.dailyReturnRate / 100 : plan.dailyReturnRate;
-    const dailyReturn = investedAmount * dailyReturnRate;
+    // Validate amount
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid amount"
+      });
+    }
 
-    // Create investment
+    // Get user and check wallet balance
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Check if user has sufficient wallet balance
+    if (user.walletBalance < numAmount) {
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient wallet balance. You need $${(numAmount - user.walletBalance).toFixed(2)} more.`
+      });
+    }
+
+    // Get plan details
+    const plan = await Plan.findById(planId);
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Investment plan not found"
+      });
+    }
+
+    // Validate investment amount against plan limits
+    if (numAmount < plan.minAmount || (plan.maxAmount && numAmount > plan.maxAmount)) {
+      return res.status(400).json({
+        success: false,
+        message: `Investment amount must be between $${plan.minAmount} and ${plan.maxAmount ? `$${plan.maxAmount}` : '∞'}`
+      });
+    }
+
+    // Calculate daily return
+    const dailyReturn = numAmount * plan.dailyReturnRate;
+
+    // Deduct amount from wallet balance
+    user.walletBalance -= numAmount;
+    await user.save();
+
+    // Create investment record
     const investment = new Investment({
       user: userId,
       plan: planId,
-      investedAmount,
+      investedAmount: numAmount,
       dailyReturn: dailyReturn,
-      paymentMethod,
-      transactionId
+      startDate: new Date(),
+      paymentMethod: paymentMethod || 'usdt_trc20',
+      status: 'active',
+      transactionId: `INV_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     });
 
     await investment.save();
 
-    // Calculate and distribute commissions
-    await distributeCommissions(userId, investedAmount);
+    console.log(`✅ Investment created: $${numAmount} by ${user.email} in plan ${plan.name}`);
 
     res.status(201).json({
       success: true,
       message: "Investment created successfully",
-      investment
+      investment: {
+        id: investment._id,
+        amount: investment.investedAmount,
+        dailyReturn: investment.dailyReturn,
+        startDate: investment.startDate,
+        plan: plan.name
+      },
+      updatedWalletBalance: user.walletBalance
     });
 
   } catch (error) {
-    console.error("Create investment error:", error);
+    console.error('Create investment error:', error);
     res.status(500).json({
       success: false,
       message: "Failed to create investment"
@@ -117,22 +149,20 @@ const distributeCommissions = async (userId, investedAmount) => {
   }
 };
 
-// Get user investments
+// Get user's investments
 export const getUserInvestments = async (req, res) => {
-  const userId = req.user.id;
-
   try {
+    const userId = req.user.id;
     const investments = await Investment.find({ user: userId })
-      .populate('plan', 'name description dailyReturnRate')
-      .sort({ createdAt: -1 });
+      .populate('plan', 'name dailyReturnRate')
+      .sort({ startDate: -1 });
 
     res.status(200).json({
       success: true,
-      investments
+      investments: investments
     });
-
   } catch (error) {
-    console.error("Get user investments error:", error);
+    console.error('Get user investments error:', error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch investments"
@@ -143,20 +173,17 @@ export const getUserInvestments = async (req, res) => {
 // Get all investments (admin only)
 export const getAllInvestments = async (req, res) => {
   try {
-    console.log("🔍 Admin requesting all investments...");
     const investments = await Investment.find()
       .populate('user', 'name email')
-      .populate('plan', 'name description')
-      .sort({ createdAt: -1 });
+      .populate('plan', 'name dailyReturnRate')
+      .sort({ startDate: -1 });
 
-    console.log(`✅ Found ${investments.length} investments`);
     res.status(200).json({
       success: true,
-      investments
+      investments: investments
     });
-
   } catch (error) {
-    console.error("❌ Get all investments error:", error);
+    console.error('Get all investments error:', error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch investments"

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/investments';
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/investments`;
 
 export const createInvestment = (investmentData, token) =>
   axios.post(`${API_URL}/`, investmentData, {
@@ -8,7 +8,7 @@ export const createInvestment = (investmentData, token) =>
   });
 
 export const getMyInvestments = (token) =>
-  axios.get(`${API_URL}/my`, {
+  axios.get(`${API_URL}/user`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

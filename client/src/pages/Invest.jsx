@@ -11,7 +11,7 @@ import styles from "./Invest.module.css"
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api'
+  baseURL: process.env.REACT_APP_BACKEND_URL
 });
 
 const Invest = () => {
@@ -19,17 +19,33 @@ const Invest = () => {
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState(null)
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
   const [investmentAmount, setInvestmentAmount] = useState("")
   const [loading, setLoading] = useState(false)
   const [walletBalance, setWalletBalance] = useState(0)
-  const [paymentMethod, setPaymentMethod] = useState("easypaisa")
   const [balanceError, setBalanceError] = useState("")
   const [plans, setPlans] = useState([])
   const [plansLoading, setPlansLoading] = useState(true)
 
   useEffect(() => {
     fetchPlans()
-  }, [])
+    if (user && token) {
+      fetchWalletBalance()
+    }
+  }, [user, token])
 
   const fetchPlans = async () => {
     try {
@@ -135,12 +151,16 @@ const Invest = () => {
 
   const fetchWalletBalance = async () => {
     try {
+      console.log("💰 Fetching wallet balance...");
       const response = await api.get("/payments/wallet/balance", {
         headers: { Authorization: `Bearer ${token}` }
       })
-      setWalletBalance(response.data.walletBalance)
+      const newBalance = response.data.walletBalance || 0;
+      console.log("💰 Wallet balance updated:", newBalance);
+      setWalletBalance(newBalance)
     } catch (error) {
-      console.error("Failed to fetch wallet balance:", error)
+      console.error("❌ Failed to fetch wallet balance:", error)
+      setWalletBalance(0)
     }
   }
 
@@ -154,7 +174,6 @@ const Invest = () => {
     setSelectedPlan(plan)
     setShowModal(true)
     setInvestmentAmount("")
-    setPaymentMethod("easypaisa")
     setBalanceError("")
   }
 
@@ -167,32 +186,20 @@ const Invest = () => {
 
   // Check if wallet has sufficient balance
   const checkWalletBalance = () => {
-    if (paymentMethod === "wallet") {
-      const amount = Number.parseFloat(investmentAmount)
-      if (amount > walletBalance) {
-        setBalanceError(`Insufficient balance. You need $${(amount - walletBalance).toFixed(2)} more.`)
-        return false
-      } else {
-        setBalanceError("")
-        return true
-      }
+    const amount = Number.parseFloat(investmentAmount)
+    if (amount > walletBalance) {
+      setBalanceError(`Insufficient balance. You need $${(amount - walletBalance).toFixed(2)} more.`)
+      return false
+    } else {
+      setBalanceError("")
+      return true
     }
-    setBalanceError("")
-    return true
-  }
-
-  // Handle payment method change
-  const handlePaymentMethodChange = (e) => {
-    setPaymentMethod(e.target.value)
-    setBalanceError("")
   }
 
   // Handle investment amount change
   const handleAmountChange = (e) => {
     setInvestmentAmount(e.target.value)
-    if (paymentMethod === "wallet") {
-      checkWalletBalance()
-    }
+    checkWalletBalance()
   }
 
   const handleInvestment = async (e) => {
@@ -210,49 +217,14 @@ const Invest = () => {
         return
       }
 
-      // Check wallet balance if using wallet payment
-      if (paymentMethod === "wallet") {
-        if (!checkWalletBalance()) {
-          setLoading(false)
-          return
-        }
-        // For wallet payments, complete the investment immediately
-        await completeWalletInvestment(amount, selectedPlan.id)
-      } else if (paymentMethod === "easypaisa") {
-        // For Easypaisa payments, redirect to real payment gateway
-        const response = await api.post("/easypaisa/pay", {
-          amount,
-          email: user.email,
-          planId: selectedPlan.id
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-
-        if (response.data.redirectUrl) {
-          // Redirect to real Easypaisa payment page
-          window.location.href = response.data.redirectUrl
-        } else {
-          toast.error("Failed to initiate payment")
-        }
-      } else if (paymentMethod === "crypto") {
-        // Call backend to create a crypto charge
-        const response = await api.post(
-          "/crypto/checkout",
-          {
-            amount,
-            userId: user.id,
-            email: user.email,
-            planId: selectedPlan.id,
-            purpose: "investment"
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (response.data.hosted_url) {
-          window.location.href = response.data.hosted_url;
-        } else {
-          toast.error("Failed to initiate crypto payment");
-        }
+      // Check wallet balance
+      if (!checkWalletBalance()) {
+        setLoading(false)
+        return
       }
+
+      // Complete the investment immediately using wallet balance
+      await completeWalletInvestment(amount, selectedPlan.id)
 
     } catch (error) {
       console.error("Investment error:", error)
@@ -264,26 +236,41 @@ const Invest = () => {
 
   const completeWalletInvestment = async (amount, planId) => {
     try {
-      const response = await api.post("/payments/success", {
-        transactionId: `WALLET_${Date.now()}`,
-        sessionId: `WALLET_SESSION_${Date.now()}`,
+      console.log("💰 Creating investment:", { amount, planId });
+      const response = await api.post("/investments/create", {
         amount,
         planId,
-        paymentMethod: "wallet"
+        paymentMethod: "usdt_trc20"
       }, {
         headers: { Authorization: `Bearer ${token}` }
       })
+
+      console.log("📊 Investment response:", response.data);
 
       if (response.data.success) {
         toast.success(`Successfully invested $${amount.toFixed(2)}! Start earning now.`)
         setShowModal(false)
         setInvestmentAmount("")
-        fetchWalletBalance() // Refresh wallet balance
+        
+        // Refresh wallet balance immediately
+        await fetchWalletBalance()
+        
+        // Update wallet balance display
+        if (response.data.updatedWalletBalance !== undefined) {
+          setWalletBalance(response.data.updatedWalletBalance)
+          console.log("💰 Updated wallet balance:", response.data.updatedWalletBalance);
+        }
+        
+        // Navigate to dashboard to show updated stats
+        setTimeout(() => {
+          navigate("/dashboard")
+        }, 1500)
       } else {
         toast.error(response.data.message || "Failed to complete investment")
       }
     } catch (error) {
-      toast.error("Failed to complete wallet investment")
+      console.error("❌ Investment error:", error);
+      toast.error(error.response?.data?.message || "Failed to complete investment")
     }
   }
 
@@ -348,12 +335,12 @@ const Invest = () => {
 
         {/* Investment Modal */}
         {showModal && selectedPlan && (
-          <div className={styles.investmentModal}>
-            <div className={styles.modalContent}>
+          <div className={styles.investmentModal} onClick={() => setShowModal(false)}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <h3 className={styles.modalTitle}>Make Investment</h3>
-                <button onClick={() => setShowModal(false)} className={styles.closeModal}>
-                  &times;
+                <button onClick={() => setShowModal(false)} className={styles.closeModal} title="Close">
+                  ✕
                 </button>
               </div>
 
@@ -384,17 +371,10 @@ const Invest = () => {
 
                 <div className={styles.formGroup}>
                   <label htmlFor="paymentMethod">Payment Method</label>
-                  <select
-                    id="paymentMethod"
-                    value={paymentMethod}
-                    onChange={handlePaymentMethodChange}
-                    className={styles.paymentMethodSelect}
-                    required
-                  >
-                    <option value="easypaisa">Easypaisa</option>
-                    <option value="wallet">Wallet (Balance: ${walletBalance.toFixed(2)})</option>
-                    <option value="crypto">Crypto</option>
-                  </select>
+                  <div className={styles.paymentMethodDisplay}>
+                    <span>USDT TRC20</span>
+                    <small>Payment will be deducted from your wallet balance</small>
+                  </div>
                 </div>
 
                 {/* Balance Error Message */}
@@ -408,7 +388,7 @@ const Invest = () => {
                 <button 
                   type="submit" 
                   className={styles.confirmBtn} 
-                  disabled={loading || (paymentMethod === "wallet" && balanceError)}
+                  disabled={loading || balanceError}
                 >
                   {loading ? <span className="loading-spinner"></span> : "Confirm Investment"}
                 </button>

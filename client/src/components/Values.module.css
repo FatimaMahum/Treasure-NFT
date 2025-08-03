@@ -1,13 +1,13 @@
 .valuesSection {
   padding: 4rem 0;
-  margin-bottom: 4rem; /* Keep some margin before footer */
+  margin-bottom: 4rem; 
   text-align: center;
   position: relative;
   z-index: 2;
 }
 
 .sectionContentWrapper {
-  /* Added wrapper to center content within full-width section */
+  
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;

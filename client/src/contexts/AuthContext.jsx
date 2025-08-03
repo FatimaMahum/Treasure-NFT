@@ -34,6 +34,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithToken = (token, user) => {
+    setToken(token);
+    setUser(user);
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
   const register = async ({ name, email, password, whatsapp, referralCode }) => {
     console.log("AuthContext register called with:", { name, email, whatsapp, referralCode });
     try {
@@ -61,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, loginWithToken, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

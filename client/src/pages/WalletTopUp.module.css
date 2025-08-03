@@ -124,22 +124,26 @@
   color: rgba(192, 192, 192, 0.6);
 }
 
-.paymentMethodSelect {
-  width: 100%;
-  padding: 0.75rem;
+.paymentMethodDisplay {
+  background: rgba(26, 26, 26, 0.8);
   border: 1px solid rgba(255, 215, 0, 0.3);
   border-radius: 8px;
-  background: rgba(26, 26, 26, 0.8);
+  padding: 0.75rem;
   color: #ffffff;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  appearance: none; /* Remove default arrow */
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-  padding-right: 2.5rem; /* Make room for custom arrow */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.paymentMethodDisplay span {
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.paymentMethodDisplay small {
+  color: #888;
+  font-size: 0.8rem;
 }
 
 .paymentMethodSelect:focus {
@@ -229,11 +233,14 @@
   .topUpContainer {
     padding: 2rem 0;
     padding-top: 90px;
+  
   }
 
   .topUpCard {
     padding: 2rem 1.5rem;
     border-radius: 15px;
+    margin-left: 30px;
+    margin-right: 30px;
   }
 
   .topUpCard h2 {

@@ -38,7 +38,7 @@ const PaymentGateway = () => {
   const handlePaymentSuccess = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/payments/success", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/payments/success`, {
         transactionId: `EP_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         sessionId: paymentData.sessionId,
         amount: paymentData.amount,

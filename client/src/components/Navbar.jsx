@@ -55,6 +55,19 @@ const Navbar = () => {
         <div className={styles.logo}>
           <span className={styles.treasure}>Nova</span>
           <span className={styles.nft}>Eye</span>
+          {user?.role === 'admin' && (
+            <span style={{
+              background: '#ffd700',
+              color: '#000',
+              fontSize: '0.7rem',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              marginLeft: '8px',
+              fontWeight: 'bold'
+            }}>
+              ADMIN
+            </span>
+          )}
         </div>
         
         {/* Hamburger Menu Button */}
@@ -89,6 +102,11 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/admin/deposits" className={styles.navLink} onClick={closeMenu}>
+                    Deposit Requests
+                  </Link>
+                </li>
+                <li>
                   <button onClick={handleLogout} className={styles.loginBtn}>
                     Logout
                   </button>
@@ -105,6 +123,11 @@ const Navbar = () => {
                 <li>
                   <Link to="/wallet-topup" className={styles.navLink} onClick={closeMenu}>
                     Top Up Wallet
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/earn" className={styles.navLink} onClick={closeMenu}>
+                    💰 Earn
                   </Link>
                 </li>
                 <li>

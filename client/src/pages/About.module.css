@@ -152,7 +152,10 @@
 
   .aboutStory {
     padding: 2rem 1rem;
-    margin-bottom: 2rem; /* Further reduced gap for mobile */
+    margin-bottom: 2rem; 
+    margin-left: 30px;
+    margin-right: 30px;
+    /* Further reduced gap for mobile */
   }
 
   .storyTitle {

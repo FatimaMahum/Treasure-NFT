@@ -291,6 +291,7 @@
   padding: 2.5rem;
   position: relative;
   overflow: hidden;
+  
   animation: slideUp 1s ease-out;
 }
 
@@ -701,7 +702,8 @@
 
 @media (max-width: 480px) {
   .statsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
   
 }

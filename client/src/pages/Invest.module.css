@@ -227,8 +227,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999; /* Much higher z-index to appear above navbar */
   animation: fadeInModal 0.3s ease-out;
+  overflow: hidden; /* Prevent modal content from scrolling */
+  padding-top: 80px; /* Add padding to account for navbar height */
 }
 
 .modalContent {
@@ -242,6 +244,9 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 215, 0, 0.2);
   animation: slideInModal 0.3s ease-out;
+  max-height: 80vh; /* Reduced height to ensure it fits above navbar */
+  overflow-y: auto; /* Allow scrolling within modal if needed */
+  margin-top: 20px; /* Add some margin from top */
 }
 
 .modalHeader {
@@ -249,6 +254,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  position: relative;
+  padding-right: 50px; /* Make space for the close button */
 }
 
 .modalTitle {
@@ -261,16 +268,30 @@
 }
 
 .closeModal {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
+  color: #ffd700;
+  font-size: 1.5rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed; /* Changed from absolute to fixed */
+  top: 100px; /* Adjusted to account for navbar height */
+  right: 20px;
+  z-index: 10000; /* Higher than modal z-index */
 }
 
 .closeModal:hover {
-  color: #ffd700;
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
 .formGroup {
@@ -319,6 +340,30 @@
   background-position: right 0.75rem center;
   background-size: 1rem;
   padding-right: 2.5rem; /* Make room for custom arrow */
+}
+
+.paymentMethodDisplay {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(26, 26, 26, 0.8);
+  color: #ffffff;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.paymentMethodDisplay span {
+  font-weight: 600;
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.paymentMethodDisplay small {
+  color: #888;
+  font-size: 0.8rem;
 }
 
 .formGroup select:focus,
@@ -478,6 +523,8 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
     padding: 0 1rem; /* Keep padding for mobile to prevent cards from touching edges */
+    margin-left: 30px;
+    margin-right: 30px;
   }
 
   .planCard {
@@ -519,6 +566,10 @@
 
   .closeModal {
     font-size: 1.8rem;
+    width: 35px;
+    height: 35px;
+    top: 90px; /* Adjusted for mobile navbar height */
+    right: 15px;
   }
 
   .formGroup label {

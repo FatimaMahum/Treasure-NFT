@@ -2,6 +2,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Pages
 import Home from './pages/Home';
@@ -17,6 +19,9 @@ import PaymentGateway from './pages/PaymentGateway';
 import WalletTopUp from './pages/WalletTopUp';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminWithdrawals from './pages/AdminWithdrawals';
+import Deposit from './pages/Deposit';
+import AdminDeposits from './pages/AdminDeposits';
+import Earn from './pages/Earn';
 
 const App = () => {
   return (
@@ -36,9 +41,26 @@ const App = () => {
             <Route path="/referrals" element={<Referrals />} />
             <Route path="/payment-gateway" element={<PaymentGateway />} />
             <Route path="/wallet-topup" element={<WalletTopUp />} />
+            <Route path="/deposit" element={<Deposit />} />
             <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+            <Route path="/admin/deposits" element={<AdminDeposits />} />
+            <Route path="/earn" element={<Earn />} />
           </Routes>
         </div>
+        
+        {/* Toast Container for notifications */}
+        <ToastContainer
+          position="top-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Router>
     </AuthProvider>
   );

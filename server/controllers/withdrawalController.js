@@ -6,22 +6,29 @@ export const requestWithdrawal = async (req, res) => {
   try {
     const userId = req.user.id;
     const { amount, address, network } = req.body;
+    
     if (!amount || !address || !network) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-    if (amount <= 0) {
-      return res.status(400).json({ success: false, message: 'Amount must be greater than 0.' });
+    
+    // Validate minimum amount
+    if (amount < 10) {
+      return res.status(400).json({ success: false, message: 'Minimum withdrawal amount is $10.' });
     }
+    
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
+    
     if (user.walletBalance < amount) {
       return res.status(400).json({ success: false, message: 'Insufficient wallet balance.' });
     }
+    
     // Deduct balance immediately
     user.walletBalance -= amount;
     await user.save();
+    
     const withdrawal = new Withdrawal({
       user: userId,
       amount,
@@ -29,8 +36,16 @@ export const requestWithdrawal = async (req, res) => {
       network,
       status: 'pending',
     });
+    
     await withdrawal.save();
-    res.status(201).json({ success: true, withdrawal });
+    
+    console.log(`✅ Withdrawal requested: $${amount} by ${user.email} to ${address}`);
+    
+    res.status(201).json({ 
+      success: true, 
+      message: 'Withdrawal request submitted! Amount will be withdrawn within 24 hours.',
+      withdrawal 
+    });
   } catch (error) {
     console.error('Withdrawal request error:', error);
     res.status(500).json({ success: false, message: 'Failed to request withdrawal.' });

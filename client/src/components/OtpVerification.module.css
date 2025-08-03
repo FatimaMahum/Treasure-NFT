@@ -1,0 +1,235 @@
+.otpOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+}
+
+.otpModal {
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.otpModal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+}
+
+.otpHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.otpHeader h2 {
+  color: #ffd700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.otpHeader p {
+  color: #c0c0c0;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.otpForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.otpInputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.otpInputContainer label {
+  color: #ffd700;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.otpInput {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5rem;
+  color: #fff;
+  transition: all 0.3s ease;
+  font-family: 'Courier New', monospace;
+}
+
+.otpInput:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.otpInput::placeholder {
+  color: rgba(192, 192, 192, 0.5);
+  letter-spacing: 0.3rem;
+}
+
+.timerContainer {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.timerContainer p {
+  color: #c0c0c0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.timer {
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.verifyButton {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  margin-top: 0.5rem;
+}
+
+.verifyButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.verifyButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.resendButton {
+  background: transparent;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.resendButton:hover:not(:disabled) {
+  background: rgba(255, 215, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.resendButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.otpFooter {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.otpFooter p {
+  color: #c0c0c0;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.resendLink {
+  background: none;
+  border: none;
+  color: #ffd700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.resendLink:hover:not(:disabled) {
+  color: #ffed4e;
+}
+
+.resendLink:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .otpModal {
+    padding: 2rem;
+    margin: 1rem;
+  }
+
+  .otpHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .otpInput {
+    font-size: 1rem;
+    padding: 0.8rem;
+    letter-spacing: 0.3rem;
+  }
+
+  .verifyButton,
+  .resendButton {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .otpModal {
+    padding: 1.5rem;
+  }
+
+  .otpHeader h2 {
+    font-size: 1.3rem;
+  }
+
+  .otpInput {
+    font-size: 0.9rem;
+    letter-spacing: 0.2rem;
+  }
+} 

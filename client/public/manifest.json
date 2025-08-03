@@ -1,21 +1,21 @@
 {
-  "short_name": "TN",
-  "name": "Treasure NFT",
+  "short_name": "NovaEye",
+  "name": "NovaEye",
   "icons": [
     {
-      "src": "favicon.svg",
+      "src": "favicon.jpeg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/jpeg"
     },
     {
-      "src": "logo192.svg",
-      "type": "image/svg+xml",
+      "src": "favicon.jpeg",
+      "type": "image/jpeg",
       "sizes": "192x192"
     },
     {
-      "src": "favicon.ico",
+      "src": "favicon.jpeg",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/jpeg"
     }
   ],
   "start_url": ".",

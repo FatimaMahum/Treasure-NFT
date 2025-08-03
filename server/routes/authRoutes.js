@@ -1,5 +1,5 @@
 import express from "express"
-import { register, login, checkAvailability, forgotPassword, verifyResetCode, resetPassword } from "../controllers/authController.js"
+import { register, login, checkAvailability, forgotPassword, verifyResetCode, resetPassword, verifyOtp, resendOtp } from "../controllers/authController.js"
 
 const router = express.Router()
 
@@ -12,5 +12,9 @@ router.get("/check-availability", checkAvailability)
 router.post("/forgot-password", forgotPassword)
 router.post("/verify-reset-code", verifyResetCode)
 router.post("/reset-password", resetPassword)
+
+// OTP verification routes
+router.post("/verify-otp", verifyOtp)
+router.post("/resend-otp", resendOtp)
 
 export default router

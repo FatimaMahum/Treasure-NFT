@@ -1,0 +1,468 @@
+.adminContainer {
+  padding: 4rem 0;
+  min-height: 80vh;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  position: relative;
+  z-index: 2;
+  padding-top: 100px;
+}
+
+.adminContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(192, 192, 192, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.adminHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+.adminHeader h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.adminHeader p {
+  color: #c0c0c0;
+  font-size: 1.2rem;
+}
+
+.unauthorized {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #ff6b6b;
+}
+
+.unauthorized h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #ffd700;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 215, 0, 0.3);
+  border-top: 3px solid #ffd700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.depositsGrid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.noDeposits {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #c0c0c0;
+}
+
+.noDeposits h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #ffd700;
+}
+
+.depositCard {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.depositCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 45px rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.depositHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.userInfo h3 {
+  color: #ffd700;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.userInfo p {
+  color: #c0c0c0;
+  font-size: 1rem;
+}
+
+.amountInfo {
+  text-align: right;
+}
+
+.amount {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 0.5rem;
+}
+
+.statusPending {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.statusApproved {
+  background: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.statusRejected {
+  background: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.depositDetails {
+  margin-bottom: 1.5rem;
+}
+
+.depositDetails p {
+  color: #c0c0c0;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.depositDetails strong {
+  color: #ffd700;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.approveBtn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.approveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.rejectBtn {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rejectBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.screenshotSection {
+  margin-top: 1.5rem;
+}
+
+.screenshotSection h4 {
+  color: #ffd700;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.screenshot {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.screenshotError {
+  color: #ff6b6b;
+  font-style: italic;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 2rem;
+}
+
+.modal {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(45, 45, 45, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.modalHeader h3 {
+  color: #ffd700;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #ffd700;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.closeBtn:hover {
+  transform: scale(1.1);
+}
+
+.modalContent {
+  color: #c0c0c0;
+}
+
+.depositInfo {
+  margin-bottom: 2rem;
+}
+
+.depositInfo p {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.depositInfo strong {
+  color: #ffd700;
+}
+
+.notesSection {
+  margin-bottom: 2rem;
+}
+
+.notesSection label {
+  display: block;
+  color: #ffd700;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.notesSection textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(26, 26, 26, 0.8);
+  color: #ffffff;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.notesSection textarea:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  background: rgba(108, 117, 125, 0.8);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelBtn:hover {
+  background: rgba(108, 117, 125, 1);
+  transform: translateY(-2px);
+}
+
+.confirmApproveBtn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirmApproveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.confirmApproveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.confirmRejectBtn {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirmRejectBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.confirmRejectBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 2rem 0;
+    padding-top: 90px;
+  }
+
+  .adminHeader h1 {
+    font-size: 2.5rem;
+  }
+
+  .adminHeader p {
+    font-size: 1rem;
+  }
+
+  .depositsGrid {
+    padding: 0 1rem;
+  }
+
+  .depositCard {
+    padding: 1.5rem;
+  }
+
+  .depositHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .amountInfo {
+    text-align: left;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+  }
+
+  .modal {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
+  
+  .screenshot {
+    max-width: 100%;
+    max-height: 200px;
+  }
+} 

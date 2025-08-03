@@ -34,4 +34,18 @@ router.get("/", protect, admin, async (req, res) => {
   }
 })
 
+// Get user profile
+router.get("/profile", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error("❌ Error fetching user profile:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch user profile" });
+  }
+});
+
 export default router

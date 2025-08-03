@@ -10,7 +10,7 @@ const WalletTopUp = () => {
   const { user, token } = useAuth();
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("easypaisa");
+  const [paymentMethod] = useState("usdt_trc20");
 
   const handleTopUp = async (e) => {
     e.preventDefault();
@@ -23,35 +23,8 @@ const WalletTopUp = () => {
         return;
       }
 
-      if (paymentMethod === "easypaisa") {
-        const response = await axios.post("http://localhost:5000/api/easypaisa/pay", {
-          amount: parseFloat(amount),
-          email: user.email
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.data.redirectUrl) {
-          window.location.href = response.data.redirectUrl;
-        } else {
-          toast.error("Failed to initiate top-up");
-        }
-      } else if (paymentMethod === "crypto") {
-        const response = await axios.post("http://localhost:5000/api/crypto/checkout", {
-          amount: parseFloat(amount),
-          userId: user.id,
-          email: user.email,
-          purpose: "wallet_topup"
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.data.hosted_url) {
-          window.location.href = response.data.hosted_url;
-        } else {
-          toast.error("Failed to initiate crypto payment");
-        }
-      }
+      // Redirect to deposit page with amount
+      window.location.href = `/deposit?amount=${amount}`;
     } catch (error) {
       toast.error(error.response?.data?.message || "Top-up failed");
     }
@@ -84,30 +57,22 @@ const WalletTopUp = () => {
 
             <div className={styles.formGroup}>
               <label htmlFor="paymentMethod">Payment Method</label>
-              <select
-                id="paymentMethod"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className={styles.paymentMethodSelect}
-                required
-              >
-                <option value="easypaisa">Easypaisa</option>
-                <option value="crypto">Crypto (Bitcoin, Ethereum, etc.)</option>
-              </select>
+              <div className={styles.paymentMethodDisplay}>
+                <span>USDT TRC20</span>
+                <small>Only USDT on Tron network accepted</small>
+              </div>
             </div>
 
             <button type="submit" className={styles.topUpBtn} disabled={loading}>
-              {loading ? "Processing..." : `Top Up with ${paymentMethod === "easypaisa" ? "Easypaisa" : "Crypto"}`}
+              {loading ? "Processing..." : "Proceed to Deposit"}
             </button>
           </form>
 
           <div className={styles.info}>
-            <p>• You will be redirected to a secure payment page</p>
-            <p>• After successful payment, your wallet will be updated automatically</p>
-            <p>• You can use your wallet balance for investments</p>
-            {paymentMethod === "crypto" && (
-              <p>• Supported cryptocurrencies: Bitcoin, Ethereum, Litecoin, and more</p>
-            )}
+            <p>• You will be redirected to the deposit page</p>
+            <p>• Send USDT to the provided address</p>
+            <p>• Upload screenshot of your transaction</p>
+            <p>• Your wallet will be credited after admin approval</p>
           </div>
         </div>
       </main>

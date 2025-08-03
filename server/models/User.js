@@ -117,6 +117,23 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // OTP System Fields
+  lastOtpSent: {
+    type: Date,
+    default: null
+  },
+  otpCode: {
+    type: String,
+    default: null
+  },
+  otpExpires: {
+    type: Date,
+    default: null
+  },
+  isFirstLogin: {
+    type: Boolean,
+    default: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

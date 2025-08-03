@@ -133,10 +133,12 @@
   .teamSection {
     padding: 2rem 0;
     margin-bottom: 2rem; /* Further reduced gap for mobile */
+    
   }
 
   .sectionContentWrapper {
     padding: 0 1rem;
+    
   }
 
   .sectionTitle {
@@ -149,7 +151,7 @@
   }
 
   .teamGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
 

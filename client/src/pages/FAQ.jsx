@@ -84,8 +84,8 @@ const FAQ = () => {
         <div className={`${styles.supportSection} slide-up`} style={{ animationDelay: `${faqs.length * 0.1}s` }}>
           <h3>Need more help?</h3>
           <p>
-            Contact our support team at <a href="mailto:support@treasurenft.com">support@treasurenft.com</a> (not a real
-            email)
+            Contact our support team at <a href="mailto:treasureenft@gmail.com">treasureenft@gmail.com</a>
+          
           </p>
           <div className={styles.cardGlow}></div>
         </div>

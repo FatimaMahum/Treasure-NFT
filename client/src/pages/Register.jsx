@@ -135,7 +135,7 @@ const Register = () => {
         console.log("Error message:", result.message);
         
         // Show backend validation errors as field-specific messages
-        if (result.message.includes("Gmail") || result.message.includes("email") || result.message.includes("Email") || 
+        if (result.message.includes("User already registered") || result.message.includes("Gmail") || result.message.includes("email") || result.message.includes("Email") || 
             result.message.includes("email address") || result.message.includes("Email already registered")) {
           setErrors(prev => ({ ...prev, email: result.message }));
         } else if (result.message.includes("Username") || result.message.includes("name") || result.message.includes("Name") ||

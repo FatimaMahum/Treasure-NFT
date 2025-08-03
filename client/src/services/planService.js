@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/plans';
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/plans`;
 
 // Get all plans (public or protected depending on backend)
 export const getPlans = () => axios.get(API_URL);
