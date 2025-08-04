@@ -260,7 +260,7 @@ const app = express();
           uploadsDir,
           depositsDir,
           files: files.slice(0, 10), // Show first 10 files
-          testUrl: files.length > 0 ? `http://localhost:5000/uploads/deposits/${files[0]}` : 'No files'
+          testUrl: files.length > 0 ? `${process.env.BACKEND_URL || req.protocol + '://' + req.get('host')}/uploads/deposits/${files[0]}` : 'No files'
         });
       } catch (error) {
         res.status(500).json({ 
@@ -315,7 +315,8 @@ const app = express();
 app.use('/api/earn', earnRoutes);
 
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);

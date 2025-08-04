@@ -751,7 +751,7 @@ const createDepositApprovedEmail = (userName, userEmail, amount, adminNotes) => 
           <p>Your wallet balance has been updated and you can now use these funds for investments or withdrawals.</p>
           
           <div style="text-align: center;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" class="button">
+            <a href="${process.env.FRONTEND_URL}/dashboard" class="button">
               View Dashboard
             </a>
           </div>
@@ -894,7 +894,7 @@ const createDepositRejectedEmail = (userName, userEmail, amount, adminNotes) => 
           </ul>
           
           <div style="text-align: center;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/deposit" class="button">
+            <a href="${process.env.FRONTEND_URL}/deposit" class="button">
               Submit New Deposit
             </a>
           </div>

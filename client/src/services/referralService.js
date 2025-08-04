@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/referrals';
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/referrals`;
 
 // Get referral dashboard data
 export const getReferralDashboard = (token) =>

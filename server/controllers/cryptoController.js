@@ -67,8 +67,8 @@ export const createCryptoCheckout = async (req, res) => {
           purpose: purpose,
           plan_id: planId || '',
         },
-        redirect_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment-success`,
-        cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/invest`,
+              redirect_url: `${process.env.FRONTEND_URL}/payment-success`,
+      cancel_url: `${process.env.FRONTEND_URL}/invest`,
       },
       {
         headers: {

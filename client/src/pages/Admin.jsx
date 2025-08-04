@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import styles from "./Admin.module.css";
 
-const API_PLANS = "http://localhost:5000/api/plans";
+const API_PLANS = `${process.env.REACT_APP_BACKEND_URL}/plans`;
 
 const Admin = () => {
   const { user, token } = useAuth();
@@ -39,8 +39,9 @@ const Admin = () => {
   });
 
   // Create axios instance
+  console.log('🔍 REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api'
+    baseURL: process.env.REACT_APP_BACKEND_URL
   });
 
   useEffect(() => {

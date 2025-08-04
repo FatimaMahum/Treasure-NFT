@@ -12,7 +12,7 @@ const simulateEasypaisaPayment = async (amount, userId) => {
     const transactionId = `EP_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     // Use a fallback URL if FRONTEND_URL is not set
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = process.env.FRONTEND_URL;
     
     return {
       sessionId,

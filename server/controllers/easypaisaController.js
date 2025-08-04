@@ -28,7 +28,7 @@ export const initiatePayment = async (req, res) => {
     const mockConfig = {
       storeId: process.env.EASYPAISA_STORE_ID || "TEST_STORE_123",
       amount: numAmount.toFixed(2),
-      postBackURL: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/easypaisa/callback`,
+      postBackURL: `${process.env.BACKEND_URL}/api/easypaisa/callback`,
       orderRefNum,
       expiryDate: "20301231 235959", // format: yyyyMMdd HHmmss
       merchantHashedReq: "",

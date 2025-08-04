@@ -15,28 +15,28 @@ const getAds = async (req, res) => {
       // Create some sample ads if none exist
       const sampleAds = [
         {
-          title: 'Palmolive Pakistan Ad',
-          description: 'Watch this amazing Palmolive Pakistan advertisement and earn ₹100!',
-          videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-          embedUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+          title: 'Sample Advertisement 1',
+          description: 'Watch this sample advertisement and earn ₹100!',
+          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          embedUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
           reward: 100,
           duration: 30,
           isActive: true
         },
         {
-          title: 'Beautiful Wear Collection',
-          description: 'Check out this stunning fashion collection and earn ₹100!',
-          videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
-          embedUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
+          title: 'Sample Advertisement 2',
+          description: 'Watch this sample advertisement and earn ₹100!',
+          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+          embedUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
           reward: 100,
           duration: 30,
           isActive: true
         },
         {
-          title: 'Golden Pearl Official',
-          description: 'Watch this Golden Pearl official advertisement and earn ₹100!',
-          videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4',
-          embedUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4',
+          title: 'Sample Advertisement 3',
+          description: 'Watch this sample advertisement and earn ₹100!',
+          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+          embedUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
           reward: 100,
           duration: 30,
           isActive: true

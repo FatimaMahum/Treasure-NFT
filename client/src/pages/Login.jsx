@@ -24,6 +24,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Create axios instance
+  console.log('🔍 REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
   const api = axios.create({
     baseURL: process.env.REACT_APP_BACKEND_URL
   });
